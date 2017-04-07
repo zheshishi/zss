@@ -1,0 +1,94 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close">
+        <i class="fa fa-times-circle"></i>
+    </div>
+
+    <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;">
+        <div class="sidebar-collapse" style="width: auto; height: 100%;">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <h1 style="font-size: 2em; color: white; text-align: center">后台管理系统</h1>
+                    </div>
+                    <div class="logo-element">
+                        zss
+                    </div>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-tv"></i>
+                        <span class="nav-label">会员管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a class="J_menuItem" href="{% url 'crm:customer_index' %}" data-index="0">我的会员</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="{% url 'order:index' %}" data-index="0">我的会员订单</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-tv"></i>
+                        <span class="nav-label">账户管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a class="J_menuItem" href="{% url 'finance:account_index' %}" data-index="0">充值&提现</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="{% url 'finance:wallet_index' %}" data-index="0">我的钱包</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-tv"></i>
+                        <span class="nav-label">产品管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a class="J_menuItem" href="{% url 'good:shop' %}" data-index="0">商品管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="{% url 'good:all_good' %}" data-index="0">店铺管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-tv"></i>
+                        <span class="nav-label">任务管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse">
+                        <li>
+                            <a class="J_menuItem" href="{% url 'cashback:task_index' %}" data-index="0">我的任务</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="{% url 'cashback:index' %}" data-index="0">返现管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="{% url 'cashback:sms_index' %}" data-index="0">推送消息</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="slimScrollBar"
+             style="background: rgb(0, 0, 0); width: 4px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 615px;"></div>
+        <div class="slimScrollRail"
+             style="width: 4px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.9; z-index: 90; right: 1px;"></div>
+    </div>
+
+    <div class="sidebar-footer">
+        <a id="btnChangeMenu"><span class="fa fa-reorder"></span></a>
+        <a class="hidden-small"><span class="fa fa-desktop"></span></a>
+        <a class="hidden-small"><span class="fa fa-lock"></span></a>
+        <a class="hidden-small" href="{% url 'logout' %}"><span class="fa fa-power-off"></span></a>
+    </div>
+</nav>
