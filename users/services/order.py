@@ -25,7 +25,7 @@ class OrderService:
         :return:
         '''
         try:
-            file = open(filename, 'r')
+            file = open(filename, 'r', encoding='gbk')
             reader = csv.reader(file)
 
             orders = []
