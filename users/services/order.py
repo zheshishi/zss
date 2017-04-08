@@ -25,10 +25,10 @@ class OrderService:
         :return:
         '''
         try:
-            file = open(filename, 'rb')
+            file = open(filename, 'r',encoding='gbk')
             # fencodint=chardet.detect(file.read())
-            #
-            # logger.info(file)
+
+            logger.info(file)
             # logger.info(fencodint)
             #
             reader = csv.reader(file)
