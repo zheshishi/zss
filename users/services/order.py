@@ -25,7 +25,7 @@ class OrderService:
         :return:
         '''
         try:
-            file = open(filename, 'r')
+            file = open(filename, 'rb')
             fencodint=chardet.detect(file.read())
 
             logger.info(file)
