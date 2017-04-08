@@ -2,7 +2,6 @@
 import csv
 from datetime import datetime
 import os
-import chardet
 from libs.common.log import logger
 from orders.models import Order
 from crm.models import Customer
@@ -26,14 +25,7 @@ class OrderService:
         '''
         try:
             file = open(filename, 'r',encoding='gbk')
-            # fencodint=chardet.detect(file.read())
-
-            logger.info(file)
-            # logger.info(fencodint)
-            #
             reader = csv.reader(file)
-
-            logger.info(reader)
 
             orders = []
             customers = []

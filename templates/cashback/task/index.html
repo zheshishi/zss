@@ -1,6 +1,7 @@
 {% extends 'base/_layout_content.html' %}
 {% load staticfiles %}
-
+{% load settings_extras %}
+}
 {% block style %}
     <link href="{% static 'css/plugins/jqgrid/ui.jqgrid.css' %}" rel="stylesheet"/>
 {% endblock %}
@@ -86,13 +87,13 @@
                     {name: 'name', index: 'name', width: 60},
                     {name: 'amount', index: 'amount', width: 30},
                     {
-                        name: 'url', index: 'url', width: 60,
+                        name: 'url', index: 'url', width: 85,
                         formatter: function (cellValue, options, rowObject) {
-                            return 'http://test.com/m/?activityid=' + rowObject.id;
+                            return '{% settings_value "DOMAIN" %}m/?activityid=' + rowObject.id;
                         }
                     },
-                    {name: 'expiretime', index: 'expiretime', width: 60},
-                    {name: 'add_time', index: 'add_time', width: 60}
+                    {name: 'expiretime', index: 'expiretime', width: 50},
+                    {name: 'add_time', index: 'add_time', width: 50}
                 ]
             };
             JucheapGrid.Load(config);
