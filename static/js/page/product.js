@@ -12,11 +12,18 @@
         }
     },
     check: {
+        autoCheckTrigger: false,
         enable: true,
-        chkboxType: {"Y": "s", "N": "s"}
+        chkboxType: {"Y": "", "N": ""}
     },
     callback: {
-        onAsyncSuccess: checkProduct
+        onAsyncSuccess: checkProduct,
+        onClick: function () {
+            console.log('click')
+        },
+        onExpand: function () {
+            console.log('onExpand')
+        },
     }
 };
 

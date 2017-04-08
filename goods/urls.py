@@ -1,17 +1,20 @@
- # coding:utf-8
+# coding:utf-8
 from django.conf.urls import url
 from django.views.generic import TemplateView
 
 from . import views
 
 urlpatterns = [
-    url(r'^shop/', views.shopsViews.as_view(),name='shop'),
-    url(r'^product/(?P<shop_id>[0-9]+)/', views.shop_goodsViews.as_view(), name='shop_good'),    
-    url(r'^product/', views.all_goodsViews.as_view(), name='all_good'),
-    url(r'^add_good/(?P<shop_id>[0-9]+)/(?P<good_id>[0-9]+)/',views.change_goodViews.as_view(),name='good_id'),
-    url(r'^add_good/(?P<shop_id>[0-9]+)/',views.add_goodViews.as_view(),name='add_good'),
+    url(r'^index/', views.GoodsManagerView.as_view(), name='index'),
+    url(r'^add/$', views.GoodsCreateView.as_view(), name='add'),
+    url(r'^edit/$', views.GoodsEditView.as_view(), name='edit'),
+    url(r'^delete/$', views.delete_goods, name='delete'),
 
+    url(r'^shop/index/', views.ShopManagerViews.as_view(), name='shop_index'),
+    url(r'^shop/add/$', views.ShopCreateView.as_view(), name='shop_add'),
+    url(r'^shop/edit/$', views.ShopEditView.as_view(), name='shop_edit'),
+    url(r'^shop/delete/$', views.delete_shops, name='shop_delete'),
+
+    url(r'^getgooods/$', views.get_goods, name='getgoods'),
+    url(r'^getshops/$', views.get_shops, name='getshops')
 ]
-
-
-

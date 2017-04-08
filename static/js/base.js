@@ -29,10 +29,14 @@
     }
 })();
 var XPage = {
-    DelData: function (url) {
+    DelData: function (url, msg) {
         var delDatas = JucheapGrid.GetDataTableDeleteData();
         if (delDatas.Len > 0 && delDatas.Data.length > 0) {
-            parent.layer.confirm("确认要删除这" + delDatas.Len + "条数据？", {
+            defalut_msg = "确认要删除这" + delDatas.Len + "条数据？";
+            if (msg) {
+                defalut_msg = msg
+            }
+            parent.layer.confirm(defalut_msg, {
                 btn: ['确认', '取消'] //按钮
             }, function () {
                 var btn = $("#btnDel");

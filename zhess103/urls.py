@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', admin.site.urls),
 
-    url(r'^good/', include('goods.urls', namespace='good')),
+    url(r'^goods/', include('goods.urls', namespace='goods')),
     # url(r'^user/', include('users.urls', namespace='user')),
     url(r'^order/', include('orders.urls', namespace='order')),
     url(r'^crm/', include('crm.urls', namespace='crm')),

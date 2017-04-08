@@ -1,0 +1,179 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block style %}
+    <link href="{% static 'js/plugins/fileinput/css/fileinput.min.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑商品</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" action="{% url 'goods:edit' %}" class="form-horizontal"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ model.id }}">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">商品名称：</label>
+                        <div class="col-sm-8">
+                            {{ form.name }}
+                            {% autoescape off %}
+                                {{ error.name }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">店铺：</label>
+                        <div class="col-sm-8">
+                            {{ form.shop }}
+                            {% autoescape off %}
+                                {{ error.shop }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">价格：</label>
+                        <div class="col-sm-8">
+                            {{ form.price1 }}
+                            {% autoescape off %}
+                                {{ error.price1 }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">平台：</label>
+                        <div class="col-sm-8">
+                            {{ form.platform }}
+                            {% autoescape off %}
+                                {{ error.platform }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">平台商品id：</label>
+                        <div class="col-sm-8">
+                            {{ form.pgoods_id }}
+                            {% autoescape off %}
+                                {{ error.pgoods_id }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group file-hidden">
+                        <label class="col-sm-3 control-label">商品图片1：</label>
+                        <div class="col-sm-8">
+                            <input id="file-0a" name="image1" class="file" type="file" data-min-file-count="0"
+                                   data-show-upload="false" value="{{ model.image1 }}">
+                            {% autoescape off %}
+                                {{ error.image1 }}
+                            {% endautoescape %}
+                        </div>
+                        <input type="hidden" class="img-hidden" name="image1url" value="{{ model.image1 }}">
+                    </div>
+                    <div class="form-group file-hidden">
+                        <label class="col-sm-3 control-label">商品图片2：</label>
+                        <div class="col-sm-8">
+                            <input id="file-1a" name="image2" class="file" type="file" data-min-file-count="0"
+                                   data-show-upload="false" value="{{ model.image2 }}">
+                            {% autoescape off %}
+                                {{ error.image1 }}
+                            {% endautoescape %}
+                        </div>
+                        <input type="hidden" class="img-hidden" name="image2url" value="{{ model.image2 }}">
+                    </div>
+                    <div class="form-group file-hidden">
+                        <label class="col-sm-3 control-label">商品图片3：</label>
+                        <div class="col-sm-8">
+                            <input id="file-2a" name="image3" class="file" type="file" data-min-file-count="0"
+                                   data-show-upload="false" value="{{ model.image3 }}">
+                            {% autoescape off %}
+                                {{ error.image1 }}
+                            {% endautoescape %}
+                        </div>
+                        <input type="hidden" class="img-hidden" name="image3url" value="{{ model.image3 }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">关键词1：</label>
+                        <div class="col-sm-8">
+                            {{ form.keyword1 }}
+                            {% autoescape off %}
+                                {{ error.keyword1 }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">关键词2：</label>
+                        <div class="col-sm-8">
+                            {{ form.keyword2 }}
+                            {% autoescape off %}
+                                {{ error.keyword2 }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">关键词3：</label>
+                        <div class="col-sm-8">
+                            {{ form.keyword3 }}
+                            {% autoescape off %}
+                                {{ error.keyword3 }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">备注</label>
+                        <div class="col-sm-8">
+                            {{ form.remark }}
+                            {% autoescape off %}
+                                {{ error.remark }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-8">
+                            <button class="btn btn-info" type="submit" id="btnSave">保存</button>
+                            <button class="btn btn-white" type="button" id="btnBack" data-type="url">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/page/jucheap.action.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/fileinput/js/fileinput.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/fileinput/js/fileinput_locale_zh.js' %}"></script>
+
+
+    <script type="text/javascript">
+        // 文件上传框
+        $('input[class=file]').each(function () {
+            var imageurl = $(this).attr("value");
+            if (imageurl) {
+                $(this).fileinput({
+                    initialPreview: [ // 预览图片的设置
+                        "<img src='" + imageurl + "' class='file-preview-image'>",]
+                });
+            }
+        });
+
+        $(function () {
+            $('input[class=file]').on('filecleared', function (event) {
+                console.log("filecleared");
+                $img = $(this).parents('.file-hidden').children('.img-hidden');
+                $img.val('');
+            });
+        })
+
+
+    </script>
+{% endblock %}

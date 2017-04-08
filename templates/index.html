@@ -1,5 +1,6 @@
 {% extends 'base/_layout.html' %}
 {% load staticfiles %}
+{% load settings_extras %}
 
 {% block content %}
 <div id="page-wrapper" class="gray-bg dashbard-1">
@@ -54,7 +55,7 @@
     </div>
     <div class="footer">
         <div class="pull-right">
-            &copy; 2012 - @DateTime.Now.Year <a href="" target="_blank">&copy;Test</a>
+            &copy; 后台管理系统 <a href="{% settings_value 'DOMAIN' %}" target="_blank"> {% settings_value 'DOMAIN' %}</a>
         </div>
     </div>
 </div>

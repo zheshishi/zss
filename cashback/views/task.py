@@ -110,7 +110,10 @@ def delete_task(request):
 
 
 def get_goods_tree(request):
-    shops = Shop.objects.filter(user_id=request.user.id).values('id', 'shopname')
+    if request.GET.get('id'):
+        return JsonResponse()
+
+    shops = Shop.objects.filter(seller_id=request.user.id).values('id', 'shopname')
     shops = list(shops)
     shop_ids = [item['id'] for item in shops]  # 商家所有店铺id
 
@@ -119,7 +122,7 @@ def get_goods_tree(request):
 
     trees = [TreeDto(item['id'], None, item['shopname'], True, True) for item in shops]  # 父级元素 店铺
     for item in goods:
-        tree = TreeDto(item['id'], item['shop_id'], item['name'], False, False)  # 子级元素 商品
+        tree = TreeDto(item['id'], item['shop_id'], item['name'], True, False)  # 子级元素 商品
         trees.append(tree)
 
     result = [item.to_dict() for item in trees]

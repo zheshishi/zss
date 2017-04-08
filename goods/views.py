@@ -1,128 +1,187 @@
-from django.shortcuts import render, redirect
+import json
+
+from django.db import transaction
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.decorators import method_decorator
 # Create your views here.
-from django.views.generic.base import View  # View是一个get和post的一个系统，可以直接def post和get，
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.views.generic.base import View
+
+from libs.common.form import invalid_msg
+from libs.common.helper import save_file
+from libs.utils.http import JSONResponse
+from libs.utils.response import paged_result
 from .models import Shop, Goods
-from users.models import AuthUser
-from .forms import TBShopName, JDShopName, GoodForm
-from django.http import JsonResponse, HttpResponse
-from django.utils import timezone
+from .forms import GoodsForm, ShopForm
+from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class shopsViews(LoginRequiredMixin, View):
+class ShopManagerViews(LoginRequiredMixin, View):
+    template_name = 'goods/shop/index.html'
+
     def get(self, request, *args, **kwargs):
-        authuser = AuthUser.objects.get(username=request.user.username)
-        userid = Shop.objects.filter(user=authuser)
-        tbform = TBShopName()
-        jdform = JDShopName()
-        return render(request, 'goods/shop.html', {"userid": userid, "tbform": tbform, "jdform": jdform})
+        form = ShopForm()
+        return render(request, self.template_name, {'form': form})
+
+
+class ShopCreateView(View):
+    template_name = 'goods/shop/add.html'
+
+    def get(self, request, *args, **kwargs):
+        form = ShopForm()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
-        authuser = AuthUser.objects.get(username=request.user.username)
-        tbform = TBShopName(request.POST)
-        jdform = JDShopName(request.POST)
-        c = timezone.now()
+        form = ShopForm(request.POST)
+        if not form.is_valid():
+            errors = {key: invalid_msg.format(value[0]) for key, value in form.errors.items()}
+            return render(request, self.template_name, {'error': errors, 'form': form})
 
-        msg1 = {"msg": "帐号已存在,请联系客服"}
-        msg2 = {"msg": "店铺已存在,请联系客服"}
-        msg3 = {"msg": "b"}
-        if tbform.is_valid():
-            a = request.POST['your_name']
-            b = request.POST['shop_name']
-            selected_name = Shop.objects.filter(platform='淘宝').filter(sellername=a).count()
-            selected_shop = Shop.objects.filter(platform='淘宝').filter(shopname=b).count()
-            if selected_name >= 1:
-                return JsonResponse(msg1)
-            elif selected_shop >= 1:
-                return JsonResponse(msg2)
-            elif selected_name == 0 and selected_shop == 0:
-                add = Shop.objects.create(user=authuser, sellername=a, shopname=b, platform='淘宝', add_time=c)
-                return JsonResponse(msg3)
-        elif jdform.is_valid():
-            d = request.POST['jdyour_name']
-            e = request.POST['jdshop_name']
-            selected_jdname = Shop.objects.filter(platform='京东').filter(sellername=d).count()
-            selected_jdshop = Shop.objects.filter(platform='京东').filter(shopname=e).count()
-            if selected_jdname >= 1:
-                return JsonResponse(msg2)
-            elif selected_jdshop >= 1:
-                return JsonResponse(msg1)
-            elif selected_jdname == 0 and selected_jdshop == 0:
-                add = Shop.objects.create(user=authuser, sellername=d, shopname=e, platform='京东', add_time=c)
-                return JsonResponse(msg3)
-                #########   ##################################   dian pu li de shang pin
+        shop = form.save(commit=False)
+        shop.seller_id = request.user.id
+        shop.save()
+
+        return redirect('goods:shop_index')
 
 
-class shop_goodsViews(LoginRequiredMixin, View):
+class ShopEditView(View):
+    template_name = 'goods/shop/edit.html'
+
     def get(self, request, *args, **kwargs):
-        shop_id = int(self.kwargs['shop_id'])
-        shop_select = Shop.objects.get(id=shop_id)
-        user_goods = Goods.objects.filter(shop=shop_select)
-        return render(request, 'goods/table_foo_table.html', {"user_goods": user_goods, "shop_id": shop_id})
-
-        ###########################    suo you shang pin
-
-
-class all_goodsViews(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        user_goods = Goods.objects.filter(user=user)
-
-        return render(request, 'goods/table_foo_table.html', {"user_goods": user_goods})
-
-
-        ##########################################################  xin jian shang pin
-
-
-class add_goodViews(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        shop_id = int(self.kwargs['shop_id'])
-        good_form = GoodForm()
-        return render(request, 'goods/add_good.html', {"form": good_form, "shop_id": shop_id})
+        shop_id = request.GET.get('id')
+        shop = get_object_or_404(Shop, id=shop_id)
+        form = ShopForm(instance=shop)
+        return render(request, self.template_name, {'form': form, 'id': shop_id})
 
     def post(self, request, *args, **kwargs):
-        shop_id = int(self.kwargs['shop_id'])
-        good = GoodForm(request.POST or None, request.FILES or None)
-        print(shop_id)
-        if good.is_valid():
-            base = good.save(commit=False)
-            base.user = request.user
-            base.shop = Shop.objects.get(id=shop_id)
-            base.add_time = timezone.now()
-            base.save()
-            return redirect('good:shop_good', shop_id=shop_id)
-        else:
+        shop_id = request.POST.get('id')
+        shop = get_object_or_404(Shop, id=shop_id)
+        form = ShopForm(request.POST, instance=shop)
+        if not form.is_valid():
+            errors = {key: invalid_msg.format(value[0]) for key, value in form.errors.items()}
+            return render(request, self.template_name, {'error': errors, 'form': form})
 
-            return HttpResponse('baocunshibai')
+        form.save()
+
+        return redirect('goods:shop_index')
 
 
-###########################################################     xiugai  shang pin
-class change_goodViews(LoginRequiredMixin, View):
+def get_shops(request):
+    ''' 获取店铺列表 '''
+
+    page = int(request.GET.get('page', 1))
+    pagesize = int(request.GET.get('rows', 15))
+    keyword = request.GET.get('keywords')
+
+    shops = Shop.objects.filter(seller_id=request.user.id)
+    if keyword:
+        shops = shops.filter(shopname__contains=keyword)  # 按店铺名称查询
+    count = shops.count()  # 总数
+    shops = shops.order_by('-add_time')[(page - 1) * pagesize:page * pagesize]
+    result = [item.to_dict() for item in list(shops)]
+
+    paged_result.set(page, pagesize, count, result)
+
+    return JsonResponse(paged_result.to_dict())
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def delete_shops(request):
+    try:
+        data = json.loads(request.body.decode())
+        shop_ids = data.get('ids')
+
+        with transaction.atomic():
+            # 删除商品
+            Goods.objects.filter(shop_id__in=shop_ids).delete()
+            # 删除店铺
+            Shop.objects.filter(id__in=shop_ids).delete()
+    except Exception as e:
+        return JSONResponse(msg='删除失败！')
+    return JSONResponse()
+
+
+class GoodsManagerView(View):
+    template_name = 'goods/index.html'
+
     def get(self, request, *args, **kwargs):
-        shop_id = int(self.kwargs['shop_id'])
-        good_id = int(self.kwargs['good_id'])
-        a = Goods.objects.get(id=good_id)
-        good_form = GoodForm(instance=a)
-        return render(request, 'goods/gai.html', {"form": good_form, "shop_id": shop_id, "good_id": good_id})
+        return render(request, self.template_name)
+
+
+class GoodsCreateView(LoginRequiredMixin, View):
+    '''新增商品'''
+    template_name = 'goods/add.html'
+
+    def get(self, request, *args, **kwargs):
+        shops = Shop.objects.filter(seller_id=request.user.id)
+        form = GoodsForm(initial={'shop': shops})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
-        good = GoodForm(request.POST or None, request.FILES or None)
-        shop_id = int(self.kwargs['shop_id'])
-        good_id = int(self.kwargs['good_id'])
-        pgood_id = request.POST['pgood_id']
-        a = Goods.objects.get(id=good_id)
-        if good.is_valid():
-            base = good.save(commit=False)
-            base.id = good_id
-            base.user = request.user
-            base.shop = Shop.objects.get(id=shop_id)
-            base.add_time = timezone.now()
-            base.save()
-            return redirect('good:shop_good', shop_id=shop_id)
+        form = GoodsForm(request.POST, request.FILES)
+        if not form.is_valid():
+            errors = {key: invalid_msg.format(value[0]) for key, value in form.errors.items()}
+            return render(request, self.template_name, {'error': errors, 'form': form})
 
-        else:
-            return HttpResponse('biaodanshibai')
+        goods = form.save(commit=False)
+        goods.seller_id = request.user.id
+        goods.save()
+
+        return redirect('goods:index')
 
 
+class GoodsEditView(View):
+    template_name = 'goods/edit.html'
 
+    def get(self, request, *args, **kwargs):
+        goods_id = request.GET.get('id')
+        goods = get_object_or_404(Goods, id=goods_id)
+        form = GoodsForm(instance=goods)
+        return render(request, self.template_name, {'form': form, 'model': goods})
+
+    def post(self, request, *args, **kwargs):
+        goods_id = request.POST.get('id')
+        goods = get_object_or_404(Goods, id=goods_id)
+        form = GoodsForm(request.POST, request.FILES, instance=goods)
+        if not form.is_valid():
+            errors = {key: invalid_msg.format(value[0]) for key, value in form.errors.items()}
+            return render(request, self.template_name, {'error': errors, 'form': form})
+
+        form.save()
+
+        return redirect('goods:index')
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def delete_goods(request):
+    try:
+        data = json.loads(request.body.decode())
+        goods_ids = data.get('ids')
+        # 删除商品
+        Goods.objects.filter(id__in=goods_ids).delete()
+    except Exception as e:
+        return JSONResponse(msg='删除失败！')
+    return JSONResponse()
+
+
+def get_goods(request):
+    ''' 获取商品表 '''
+
+    page = int(request.GET.get('page', 1))
+    pagesize = int(request.GET.get('rows', 15))
+    keyword = request.GET.get('keywords')
+
+    goods = Goods.objects.filter(seller_id=request.user.id)
+    if keyword:
+        goods = goods.filter(name__contains=keyword)  # 按商品名称查询
+    count = goods.count()  # 总数
+    goods = goods.order_by('-add_time')[(page - 1) * pagesize:page * pagesize]
+    result = [item.to_dict() for item in list(goods)]
+
+    paged_result.set(page, pagesize, count, result)
+
+    return JsonResponse(paged_result.to_dict())
