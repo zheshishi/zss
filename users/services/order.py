@@ -25,8 +25,13 @@ class OrderService:
         :return:
         '''
         try:
-            file = open(filename, 'r', encoding='utf-8')
+            file = open(filename, 'r')
+
+            logger.info(file)
+
             reader = csv.reader(file)
+
+            logger.info(reader)
 
             orders = []
             customers = []
