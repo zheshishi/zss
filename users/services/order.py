@@ -26,11 +26,11 @@ class OrderService:
         '''
         try:
             file = open(filename, 'rb')
-            fencodint=chardet.detect(file.read())
-
-            logger.info(file)
-            logger.info(fencodint)
-
+            # fencodint=chardet.detect(file.read())
+            #
+            # logger.info(file)
+            # logger.info(fencodint)
+            #
             reader = csv.reader(file)
 
             logger.info(reader)
