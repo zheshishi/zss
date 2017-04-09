@@ -18,19 +18,19 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
-from users.views import *
-from django.views.static import serve
+
+from apps.users.views import *
 
 urlpatterns = [
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', admin.site.urls),
 
-    url(r'^goods/', include('goods.urls', namespace='goods')),
+    url(r'^goods/', include('apps.goods.urls', namespace='goods')),
     # url(r'^user/', include('users.urls', namespace='user')),
-    url(r'^order/', include('orders.urls', namespace='order')),
-    url(r'^crm/', include('crm.urls', namespace='crm')),
-    url(r'^finance/', include('finance.urls', namespace='finance')),
-    url(r'^cashback/', include('cashback.urls', namespace='cashback')),
+    url(r'^order/', include('apps.orders.urls', namespace='order')),
+    url(r'^crm/', include('apps.crm.urls', namespace='crm')),
+    url(r'^finance/', include('apps.finance.urls', namespace='finance')),
+    url(r'^cashback/', include('apps.cashback.urls', namespace='cashback')),
 
     url(r'm/', include('wechat.urls', namespace='wechat')),
 
