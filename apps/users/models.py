@@ -12,6 +12,7 @@ class AuthUser(AbstractUser):
     wechat = models.CharField(max_length=20, null=True, blank=True, verbose_name=u"微信号")
     qq = models.CharField(max_length=13, null=True, blank=True, verbose_name=u"qq")
     alipay = models.CharField(max_length=20, null=True, blank=True, verbose_name=u"alipay")
+    task_interval=models.IntegerField('任务领取时间',null=True, blank=True)
     bankName = models.CharField(choices=(
     ('zsbank', '招商银行'), ('zgbank', '中国银行'), ('jsbank', '建设银行'), ('gsbank', '工商银行'), ('nybank', '农业银行'),
     ('jtbank', '交通银行')), null=True, verbose_name=u"银行", max_length=9)

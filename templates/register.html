@@ -9,13 +9,11 @@
     <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
     <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
     <link rel="shortcut icon" href="favicon.ico">
-    <link href="/static/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
-    <link href="{% static 'css/font-awesome.min.css?v=4.4.0' %}" rel="stylesheet">
-
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/plugins/iCheck/custom.css' %}" rel="stylesheet">
     <link href="{% static 'css/animate.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
-
 </head>
 
 <body class="gray-bg">
@@ -24,18 +22,27 @@
         <div>
             <h1 class="logo-name">H+</h1>
         </div>
-        <h3>欢迎注册 H+</h3>
+        <h3>欢迎注册</h3>
         <p></p>
         <form method="post" action="{% url 'register' %}">
             {% csrf_token %}
             <div class="form-group">
-                <input name="username" type="text" class="form-control" placeholder="请输入用户名" required="">
+                {{ form.username }}
+                {% autoescape off %}
+                    {{ error.username }}
+                {% endautoescape %}
             </div>
             <div class="form-group">
-                <input name="password" type="password" class="form-control" placeholder="请输入密码" required="">
+                {{ form.password }}
+                {% autoescape off %}
+                    {{ error.password }}
+                {% endautoescape %}
             </div>
             <div class="form-group">
-                <input name="password2" type="password" class="form-control" placeholder="请再次输入密码" required="">
+                {{ form.password2 }}
+                {% autoescape off %}
+                    {{ error.password2 }}
+                {% endautoescape %}
             </div>
             {#            <div class="form-group text-left">#}
             {#                <div class="checkbox i-checks">#}
@@ -44,9 +51,9 @@
             {#                    </label>#}
             {#                </div>#}
             {#            </div>#}
-            <div class="error btns login-form-tips" id="jsLoginTips">
-                {{ msg }}
-            </div>
+            {#            <div class="error btns login-form-tips" id="jsLoginTips">#}
+            {#                {{ msg }}#}
+            {#            </div>#}
             <button type="submit" class="btn btn-primary block full-width m-b">注 册</button>
             <p class="text-muted text-center">
                 <small>已经有账户了？</small>
@@ -55,15 +62,17 @@
         </form>
     </div>
 </div>
-<script src="{% static 'js/jquery.min.js?v=2.1.4' %}"></script>
-<script src="{% static 'js/bootstrap.min.js?v=3.3.5' %}"></script>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/page/content.js' %}"></script>
 <script src="{% static 'js/plugins/iCheck/icheck.min.js' %}"></script>
+
 <script>
     $(document).ready(function () {
         $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",})
     });
 </script>
-{#    <script type="{% static 'text/javascript' %}" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>#}
 </body>
 
 </html>

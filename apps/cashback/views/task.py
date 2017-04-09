@@ -1,6 +1,6 @@
 import json
 
-from apps.cashback.forms import TaskForm, CashbackForm
+from apps.cashback.forms import TaskForm, CashbackForm, TaskIntervalForm
 from apps.cashback.models import CashbackTask, CashbackTaskGoods, Cashback
 from apps.cashback.services.task import TaskService, CashbackService
 from apps.crm.models import Customer
@@ -88,6 +88,26 @@ class TaskEditView(LoginRequiredMixin, View):
         except Exception as ex:
             errors = dict(name=invalid_msg.format('保存失败！'))
             return render(request, self.template_name, {'error': errors, 'form': form})
+
+        return redirect('cashback:task_index')
+
+
+class TaskIntervalEditView(View):
+    '''任务领取时间'''
+    template_name = 'cashback/task/interval.html'
+
+    def get(self, request, *args, **kwargs):
+        form = TaskIntervalForm(initial={'interval': request.user.task_interval})
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = TaskIntervalForm(request.POST)
+        if not form.is_valid():
+            errors = {key: invalid_msg.format(value[0]) for key, value in form.errors.items()}
+            return render(request, self.template_name, {'error': errors, 'form': form})
+
+        request.user.task_interval = form.cleaned_data.get('interval')
+        request.user.save()
 
         return redirect('cashback:task_index')
 

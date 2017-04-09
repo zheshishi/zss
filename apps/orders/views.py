@@ -1,7 +1,6 @@
 import json
 import os
 import time
-
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -11,7 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from orders.forms import OrderForm
 from users.services.order import OrderService
-
 from apps.orders.models import Order
 from libs.common.form import invalid_msg
 from libs.utils.http import JSONResponse, JSONError

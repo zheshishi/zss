@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import make_password
+
+from common.form import invalid_msg
 from .models import AuthUser
 from django.views.generic.base import View
 from .forms import LoginForm, RegisterForm
@@ -27,43 +29,39 @@ class RegisterView(View):
     template_name = 'register.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        form = RegisterForm()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = RegisterForm(request.POST)
         if not form.is_valid():
-            return render(request, self.template_name)
+            errors = {key: invalid_msg.format(value[0]) for key, value in form.errors.items()}
+            return render(request, self.template_name, {'error': errors, 'form': form})
 
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        password2 = request.POST.get('password2')
-        if password != password2:
-            return render(request, 'register.html', {"msg": "密码两次输入不一致"})
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
 
-        user_profile = AuthUser()
-        user_profile.username = username
-        # user_profile.email = username
-        user_profile.password = make_password(password)
-        user_profile.is_active = True
-        user_profile.save()
+        user = AuthUser()
+        user.username = username
+        user.password = make_password(password)
+        user.is_active = False
+        user.save()
 
         return redirect('login')
 
 
 class LoginView(View):
+    template_name = 'login.html'
+
     def get(self, request):
-        return render(request, "login.html")
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST)
         if not form.is_valid():
-            return render(request, "login.html", {"login_form": form})
+            errors = {'username': invalid_msg.format(value[0]) for key, value in form.errors.items()}
+            return render(request, self.template_name, {'error': errors, 'form': form})
 
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = auth.authenticate(username=username, password=password)
-        if user is not None:
-            auth.login(request, user)
-            return redirect('home')
-        else:
-            return render(request, 'login.html', {'msg': '账号密码错误'})
+        auth.login(request, form.user)
+        return redirect('home')

@@ -1,10 +1,10 @@
 # coding:utf-8
 import os
-
+from datetime import datetime, timedelta
 from django import forms
 from apps.orders.models import Order
-
 from apps.cashback.models import CashbackTask, Cashback
+from apps.users.models import AuthUser
 
 img_extensions = ['.png', '.jpg', '.bmp']
 
@@ -35,15 +35,24 @@ class ActivityForm(forms.Form):
             raise forms.ValidationError('活动不存在')
         self.task = self.task[0]
 
+        #商家
+        seller=AuthUser.objects.get(id=self.task.seller_id)
+
         orderno = self.cleaned_data.get('orderno')
-        self.order = Order.objects.filter(id=orderno, seller_id=self.task.seller_id)
+        self.order = Order.objects.filter(id=orderno, seller_id=seller.id)
         if not self.order:
             raise forms.ValidationError('错误的订单号')
         self.order = self.order[0]
 
-        cashback = Cashback.objects.filter(orderno=orderno)
-        if cashback:
+        cashback = Cashback.objects.filter(seller_id=seller.id)
+        if cashback.filter(orderno=orderno).count() > 0:
             raise forms.ValidationError('请勿重复提交')
+
+        # 限制领取时间
+        if seller.task_interval > 0:
+            start = datetime.now() - timedelta(days=seller.task_interval)
+            if cashback.filter(customer_id=self.order.customer_id, add_time__gte=start).count() > 0:
+                raise forms.ValidationError('在{0}天内已有领取'.format(seller.task_interval))
 
         wechat = self.cleaned_data.get('wechat')
         alipay = self.cleaned_data.get('alipay')

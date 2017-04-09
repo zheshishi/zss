@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^task/index/$', task.TaskManagerView.as_view(), name='task_index'),
     url(r'^task/add/$', task.TaskCreateView.as_view(), name='task_add'),
     url(r'^task/edit/$', task.TaskEditView.as_view(), name='task_edit'),
+    url(r'^task/interval/$', task.TaskIntervalEditView.as_view(), name='task_interval'),
     url(r'^task/delete/$', task.delete_task, name='task_delete'),
 
     url(r'^sms/index/$', sms.SmsManagerView.as_view(), name='sms_index'),

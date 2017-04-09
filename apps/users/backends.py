@@ -1,7 +1,6 @@
 # coding:utf-8
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-
 from apps.users.models import AuthUser
 
 
@@ -11,5 +10,6 @@ class CustomBackend(ModelBackend):
             user = AuthUser.objects.get(Q(username=username) | Q(email=username))
             if user.check_password(password):
                 return user
+            return None
         except Exception as e:
             return None

@@ -22,6 +22,14 @@ class TaskForm(forms.ModelForm):
         fields = ['name', 'amount', 'max_count', 'expiretime', 'remark']
 
 
+class TaskIntervalForm(forms.Form):
+    attrs = {
+        'class': 'form-control',
+    }
+
+    interval = forms.IntegerField(widget=forms.NumberInput(attrs=attrs), required=False)
+
+
 class CashbackForm(forms.Form):
     attrs = {
         'class': 'form-control',
@@ -68,7 +76,7 @@ CASHBACKADMIN_CHOICES = (
 
 
 class CashbackAdminForm(forms.ModelForm):
-    status = forms.ChoiceField(choices=CASHBACKADMIN_CHOICES,label='状态')
+    status = forms.ChoiceField(choices=CASHBACKADMIN_CHOICES, label='状态')
 
     class Meta:
         model = Cashback

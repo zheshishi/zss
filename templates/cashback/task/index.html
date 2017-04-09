@@ -25,6 +25,9 @@
                     <button id="btnEdit" type="button" class="btn btn-info " onclick="editModel()"><i
                             class="fa fa-paste"></i> 编辑
                     </button>
+                    <button id="btnEditTime" type="button" class="btn btn-info " onclick="editTime()"><i
+                            class="fa fa-paste"></i> 时间限制
+                    </button>
                     <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
                         <i class="fa fa-dedent"></i>&nbsp;&nbsp;<span class="bold">删除</span>
                     </button>
@@ -53,7 +56,12 @@
     <script>
         function addModel() {
             $("#btnAdd").button("loading");
-            window.location.href = "/apps/cashback/task/add/";
+            window.location.href = "/cashback/task/add/";
+        }
+
+        function editTime() {
+            $("#btnEditTime").button("loading");
+            window.location.href = "{% url 'cashback:task_interval' %}";
         }
 
         function editModel() { //编辑
